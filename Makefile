@@ -17,10 +17,10 @@ pypi:
 	python -m twine upload --repository pypi dist/*
 
 test:
-	python -W error doc/test_plac.py
+	PYTHON_COLORS=0 python -W error doc/test_plac.py
 
 generate:
-	python -W error doc/generate_help.py
+	PYTHON_COLORS=0 python -W error doc/generate_help.py
 
 clean:
 	rm -rf docs/
