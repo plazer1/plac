@@ -1,7 +1,10 @@
 HISTORY
 -------
 
-## [Unreleased]
+## 1.4.6 (2026-08-17)
+
+Making plac Python 3.14 ready.
+
 
 ## 1.4.0 (2023-09-19)
 
