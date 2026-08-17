@@ -1,2 +1,5 @@
 doc/conf.shelve.db
 docs/
+# pixi environments
+.pixi/*
+!.pixi/config.toml

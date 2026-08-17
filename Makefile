@@ -16,8 +16,11 @@ pypi:
 	python setup.py sdist bdist_wheel
 	python -m twine upload --repository pypi dist/*
 
+# pixi shell -e py314
+# pixi shell -e py312
 test:
-	PYTHON_COLORS=0 python -W error doc/test_plac.py
+	PYTHON_COLORS=0 pixi run -e py312 python -W error doc/test_plac.py
+	PYTHON_COLORS=0 pixi run -e py314 python -W error doc/test_plac.py
 
 generate:
 	PYTHON_COLORS=0 python -W error doc/generate_help.py

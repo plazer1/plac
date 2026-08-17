@@ -1,0 +1,26 @@
+[workspace]
+authors = ["Istvan Albert <istvan.albert@gmail.com>"]
+channels = ["conda-forge"]
+name = "plac"
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.10"
+twine = ">=7.0.0,<8"
+setuptools = ">=84.0.0,<85"
+
+[pypi-dependencies]
+plac = { path = ".", editable = true }
+
+[feature.py312.dependencies]
+python = "3.12.*"
+
+[feature.py314.dependencies]
+python = "3.14.*"
+
+[environments]
+py312 = ["py312"]
+py314 = ["py314"]
