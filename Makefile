@@ -19,6 +19,7 @@ pypi:
 # pixi shell -e py314
 # pixi shell -e py312
 test:
+	flake8 *.py --count --select=E9,F63,F7,F82 --show-source --statistics
 	PYTHON_COLORS=0 pixi run -e py312 python -W error doc/test_plac.py
 	PYTHON_COLORS=0 pixi run -e py314 python -W error doc/test_plac.py
 

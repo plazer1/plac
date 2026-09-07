@@ -11,6 +11,7 @@ version = "0.1.0"
 python = ">=3.10"
 twine = ">=7.0.0,<8"
 setuptools = ">=84.0.0,<85"
+flake8 = ">=7.3.0,<8"
 
 [pypi-dependencies]
 plac = { path = ".", editable = true }
