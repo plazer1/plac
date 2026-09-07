@@ -18,7 +18,12 @@ import threading
 import plac_core
 
 version = sys.version_info[:2]
-multiprocessing = mp.get_context("fork")
+
+# MPTask requires fork; 3.14 default is forkserver/spawn.
+try:
+    multiprocessing = mp.get_context("fork")
+except (ValueError, AttributeError):  # Windows / Py<3.4
+    multiprocessing = mp
 
 if version < (3, 5):
     from imp import load_source
@@ -542,6 +547,9 @@ class MPTask(BaseTask):
         """
         The monitor has a .send method and a .man multiprocessing.Manager
         """
+        if sys.platform == "win32":
+            raise RuntimeError(
+                "mpcommands require os.fork and are not supported on this platform")
         self.no = no
         self.arglist = arglist
         self._genobj = self._wrap(genobj, stringify_tb=True)

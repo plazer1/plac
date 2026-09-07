@@ -1,39 +1,88 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://docs.github.com/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Test plac
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-
+  lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['2.7', '3.5', '3.6', '3.7', '3.8']
-
+    timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.14'
+        cache: pip
+        cache-dependency-path: setup.py
+    - name: Install flake8
+      run: python -m pip install flake8
+    - name: Lint
+      run: flake8 *.py --count --select=E9,F63,F7,F82 --show-source --statistics
+
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.10', '3.14', '3.15']
+        include:
+          - os: macos-latest
+            python-version: '3.14'
+          - os: windows-latest
+            python-version: '3.14'
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8
-        python -m pip install -e .
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 *.py --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 *.py --count --exit-zero --max-line-length=127 --statistics
+        allow-prereleases: true
+        cache: pip
+        cache-dependency-path: setup.py
+    - name: Install
+      run: python -m pip install -e .
     - name: Tests
+      run: python doc/test_plac.py
+    - name: Interpreter tests
+      working-directory: doc
+      run: python test_ishelve.py
+
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.14'
+        cache: pip
+        cache-dependency-path: setup.py
+    - name: Build and check
       run: |
+        python -m pip install build twine
+        python -m build
+        twine check dist/*
+    - name: Install from sdist
+      run: python -m pip install dist/*.tar.gz
+    - name: Tests against installed package
+      run: |
+        python -c "import plac; print(plac.__file__)"
         python doc/test_plac.py
