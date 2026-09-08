@@ -100,6 +100,41 @@ options:
   -d, --debug         debug mode
 ```
 
+### Multi-line help
+
+You may want to add a line break in the help string for a parameter,
+to make it more readable in case it's long. In such case `plac` will
+automatically remove these line breaks by default, whether you create
+them using explicit newline characters or using a multi-line string literal.
+To preserve line breaks in argument help strings, pass the parameter
+`formatter_class=plac.MultilineFormatter` to `plac.call()`:
+
+```python
+@plac.opt('iter', help="Number of iterations.\nMore iterations provide" +
+                       " better results but take more time to compute.")
+...
+
+if __name__ == '__main__':
+  plac.call(main, formatter_class=plac.MultilineFormatter)
+```
+
+This will remove indentation of help strings while keeping the new-line
+characters intact. Removing indentation is useful in case you use
+multi-line string literals, as in:
+
+```python
+class Application:
+    @plac.flg('debug', help="""
+        Debug mode: outputs detailed, possibly sensitive information at
+        the cost of decreased performance. Should not be used in production.
+    """)
+    def run(debug=False):
+        ...
+```
+
+If you wish to preserve the indentation, you can use
+`argparse.RawTextHelpFormatter` as the `formatter_class` instead.
+
 ## Decorator reference
 
 To use `plac` all you need to know are the following three decorators:
