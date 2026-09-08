@@ -147,6 +147,27 @@ class Annotation(object):
 
 NONE = object()  # sentinel use to signal the absence of a default
 
+
+class HelpFormatter(argparse.HelpFormatter):
+
+    @staticmethod
+    def clean_text(text):
+        return textwrap.dedent(text.removeprefix('\n'))
+
+    def _fill_text(self, text, width, indent):
+        """
+        For general program description.
+        """
+        clean_text = self.clean_text(text)
+        return textwrap.indent(clean_text, indent)
+
+    def _split_lines(self, text, width):
+        """
+        For argument descriptions.
+        """
+        return self.clean_text(text).splitlines()
+
+
 PARSER_CFG = getfullargspec(argparse.ArgumentParser.__init__).args[1:]
 # the default arguments accepted by an ArgumentParser object
 
@@ -157,7 +178,7 @@ def pconf(obj):
     """
     cfg = dict(description=(textwrap.dedent(obj.__doc__.rstrip())
                             if obj.__doc__ else None),
-               formatter_class=argparse.RawTextHelpFormatter)
+               formatter_class=HelpFormatter)
     for name in dir(obj):
         if name in PARSER_CFG:  # argument of ArgumentParser
             cfg[name] = getattr(obj, name)
