@@ -449,8 +449,8 @@ def call(obj, arglist=None, eager=True, version=None, **parser_confparams):
     by using the parser inferred from the annotations of obj
     and call obj with the parsed arguments.
     If obj is an object with attribute .commands, dispatch to the
-
     associated subparser.
+
     :param parser_confparams: keyword arguments passed to ArgumentParser
     """
     if arglist is None:
