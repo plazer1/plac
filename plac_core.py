@@ -157,7 +157,7 @@ def pconf(obj):
     """
     cfg = dict(description=(textwrap.dedent(obj.__doc__.rstrip())
                             if obj.__doc__ else None),
-               formatter_class=argparse.RawDescriptionHelpFormatter)
+               formatter_class=argparse.RawTextHelpFormatter)
     for name in dir(obj):
         if name in PARSER_CFG:  # argument of ArgumentParser
             cfg[name] = getattr(obj, name)
