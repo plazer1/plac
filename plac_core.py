@@ -155,7 +155,9 @@ class MultilineFormatter(argparse.HelpFormatter):
 
     @staticmethod
     def clean_text(text):
-        return textwrap.dedent(text.removeprefix('\n'))
+        if text.startswith('\n'):
+            text = text[1:]
+        return textwrap.dedent(text)
 
     def _fill_text(self, text, width, indent):
         """
