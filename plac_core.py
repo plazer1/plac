@@ -148,7 +148,10 @@ class Annotation(object):
 NONE = object()  # sentinel use to signal the absence of a default
 
 
-class HelpFormatter(argparse.HelpFormatter):
+class MultilineFormatter(argparse.HelpFormatter):
+    """
+    This formatter preserves newlines in description of arguments.
+    """
 
     @staticmethod
     def clean_text(text):
@@ -178,7 +181,7 @@ def pconf(obj):
     """
     cfg = dict(description=(textwrap.dedent(obj.__doc__.rstrip())
                             if obj.__doc__ else None),
-               formatter_class=HelpFormatter)
+               formatter_class=argparse.RawDescriptionHelpFormatter)
     for name in dir(obj):
         if name in PARSER_CFG:  # argument of ArgumentParser
             cfg[name] = getattr(obj, name)
@@ -440,17 +443,19 @@ def iterable(obj):
     return hasattr(obj, '__iter__') and not inspect.isclass(obj) and not isinstance(obj, (str, bytes))
 
 
-def call(obj, arglist=None, eager=True, version=None):
+def call(obj, arglist=None, eager=True, version=None, **parser_confparams):
     """
     If obj is a function or a bound method, parse the given arglist
     by using the parser inferred from the annotations of obj
     and call obj with the parsed arguments.
     If obj is an object with attribute .commands, dispatch to the
+
     associated subparser.
+    :param parser_confparams: keyword arguments passed to ArgumentParser
     """
     if arglist is None:
         arglist = sys.argv[1:]
-    parser = parser_from(obj)
+    parser = parser_from(obj, **parser_confparams)
     if version:
         parser.add_argument(
             '--version', '-v', action='version', version=version)
