@@ -147,32 +147,6 @@ class Annotation(object):
 
 NONE = object()  # sentinel use to signal the absence of a default
 
-
-class MultilineFormatter(argparse.HelpFormatter):
-    """
-    This formatter preserves newlines in description of arguments.
-    """
-
-    @staticmethod
-    def clean_text(text):
-        if text.startswith('\n'):
-            text = text[1:]
-        return textwrap.dedent(text)
-
-    def _fill_text(self, text, width, indent):
-        """
-        For general program description.
-        """
-        clean_text = self.clean_text(text)
-        return textwrap.indent(clean_text, indent)
-
-    def _split_lines(self, text, width):
-        """
-        For argument descriptions.
-        """
-        return self.clean_text(text).splitlines()
-
-
 PARSER_CFG = getfullargspec(argparse.ArgumentParser.__init__).args[1:]
 # the default arguments accepted by an ArgumentParser object
 
