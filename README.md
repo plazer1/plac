@@ -100,50 +100,26 @@ options:
   -d, --debug         debug mode
 ```
 
-### Multi-line help
+### Custom help formatter
 
 You may want to add a line break in the help string for a parameter,
 to make it more readable in case it's long. In such case `plac` will
 automatically remove these line breaks by default, whether you create
 them using explicit newline characters or using a multi-line string literal.
-To preserve line breaks in argument help strings, pass the parameter
-`formatter_class=plac.MultilineFormatter` to `plac.call()`
-and use a double line break in the help string to emit a single line break
-in the output:
+To preserve line breaks in argument help strings, you can use a custom
+`HelpFormatter` by passing it as parameter `formatter_class=` to `plac.call()`:
 
 ```python
-@plac.opt('iter', help="Number of iterations.\n\nMore iterations provide" +
-                       " better results but take more time to compute.")
-...
+class MyCustomFormatter(argparse.HelpFormatter):
+    ...
 
 if __name__ == '__main__':
-  plac.call(main, formatter_class=plac.MultilineFormatter)
+    plac.call(main, formatter_class=MyCustomFormatter)
 ```
 
-This will remove indentation of help strings and break long lines on
-word boundaries just like the standard formatter does. Removing indentation
-is necessary in case you use multi-line string literals, as in:
-
-```python
-class Application:
-    @plac.flg('debug', help="""
-        Debug mode: outputs detailed, possibly sensitive information at
-        the cost of decreased performance.\n
-        Should not be used in production.
-    """)
-    def run(debug=False):
-        ...
-```
-
-This produces the following help for the `debug` argument:
-```
-  -d, --debug  Debug mode: outputs detailed, possibly sensitive information at the cost of decreased performance.
-               Should not be used in production.
-```
-
-If you wish to preserve the indentation, you can use `argparse.RawTextHelpFormatter`
-as the `formatter_class` instead; however, there are some caveats,
-e.g. it does not reflow the text according to screen width.
+If you wish to preserve the help strings verbatim, you can use
+`argparse.RawTextHelpFormatter` as the `formatter_class`; however, there are
+some caveats, e.g. it does not de-dent the text like the standard formatter does.
 
 ## Decorator reference
 
