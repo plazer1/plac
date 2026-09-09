@@ -100,14 +100,18 @@ options:
   -d, --debug         debug mode
 ```
 
-### Custom help formatter
+### Customizing the underlying `argparse.ArgumentParser`
 
-You may want to add a line break in the help string for a parameter,
-to make it more readable in case it's long. In such case `plac` will
-automatically remove these line breaks by default, whether you create
-them using explicit newline characters or using a multi-line string literal.
-To preserve line breaks in argument help strings, you can use a custom
-`HelpFormatter` by passing it as parameter `formatter_class=` to `plac.call()`:
+It is possible to pass keyword arguments to `call`, which then get
+passed on to the underlying `argparse.ArgumentParser`. This allows for
+advanced control of behavior, such as using a custom help formatter. 
+
+For example, you may want to add a line break in the help string for
+a parameter, to make it more readable in case it's long. In such case
+`plac` will automatically remove these line breaks by default, whether
+you create them using escape newline characters (`\n`) or using
+a multi-line string literal. To preserve line breaks in argument
+help strings, you can use a custom `HelpFormatter` by passing itas parameter `formatter_class=` to `plac.call()`:
 
 ```python
 class MyCustomFormatter(argparse.HelpFormatter):
