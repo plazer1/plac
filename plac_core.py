@@ -419,7 +419,7 @@ def iterable(obj):
     return hasattr(obj, '__iter__') and not inspect.isclass(obj) and not isinstance(obj, (str, bytes))
 
 
-def call(obj, arglist=None, eager=True, version=None, **parser_confparams):
+def call(obj, arglist=None, eager=True, version=None, parser_config={}):
     """
     If obj is a function or a bound method, parse the given arglist
     by using the parser inferred from the annotations of obj
@@ -427,11 +427,11 @@ def call(obj, arglist=None, eager=True, version=None, **parser_confparams):
     If obj is an object with attribute .commands, dispatch to the
     associated subparser.
 
-    :param parser_confparams: keyword arguments passed to ArgumentParser
+    :param parser_config: dict of keyword arguments passed to ArgumentParser
     """
     if arglist is None:
         arglist = sys.argv[1:]
-    parser = parser_from(obj, **parser_confparams)
+    parser = parser_from(obj, **parser_config)
     if version:
         parser.add_argument(
             '--version', '-v', action='version', version=version)

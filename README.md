@@ -102,24 +102,30 @@ options:
 
 ### Customizing the underlying `argparse.ArgumentParser`
 
-It is possible to pass keyword arguments to `call`, which then get
-passed on to the underlying `argparse.ArgumentParser`. This allows for
-advanced control of behavior, such as using a custom help formatter. 
+It is possible to pass argument `parser_config` to `call`, which then gets
+passed on to the underlying `argparse.ArgumentParser` as keyword arguments.
+This allows for advanced control of behavior, such as using a custom
+help formatter.
 
 For example, you may want to add a line break in the help string for
 a parameter, to make it more readable in case it's long. In such case
 `plac` will automatically remove these line breaks by default, whether
 you create them using escape newline characters (`\n`) or using
 a multi-line string literal. To preserve line breaks in argument
-help strings, you can use a custom `HelpFormatter` by passing it
-as keyword argument `formatter_class=` to `plac.call()`:
+help strings, you can use a custom `HelpFormatter` by passing a parser
+config containing the `formatter_class` key to `plac.call()`:
 
 ```python
 class MyCustomFormatter(argparse.HelpFormatter):
     ...
 
 if __name__ == '__main__':
-    plac.call(main, formatter_class=MyCustomFormatter)
+    plac.call(
+        main,
+        parser_config=dict(
+            formatter_class=MyCustomFormatter
+        )
+    )
 ```
 
 If you wish to preserve the help strings verbatim, you can use
