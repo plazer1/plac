@@ -111,7 +111,8 @@ a parameter, to make it more readable in case it's long. In such case
 `plac` will automatically remove these line breaks by default, whether
 you create them using escape newline characters (`\n`) or using
 a multi-line string literal. To preserve line breaks in argument
-help strings, you can use a custom `HelpFormatter` by passing itas parameter `formatter_class=` to `plac.call()`:
+help strings, you can use a custom `HelpFormatter` by passing it
+as keyword argument `formatter_class=` to `plac.call()`:
 
 ```python
 class MyCustomFormatter(argparse.HelpFormatter):
@@ -122,8 +123,10 @@ if __name__ == '__main__':
 ```
 
 If you wish to preserve the help strings verbatim, you can use
-`argparse.RawTextHelpFormatter` as the `formatter_class`; however, there are
-some caveats, e.g. it does not de-dent the text like the standard formatter does.
+`argparse.RawTextHelpFormatter` as the `formatter_class`; however,
+there are some caveats, e.g. it does not de-dent the text like
+the standard formatter does (although this can be easily accomplished 
+using `textwrap.dedent`).
 
 ## Decorator reference
 
